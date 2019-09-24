@@ -1,0 +1,67 @@
+= MagicJavaParameter
+
+MagicJavaParameter is a simple application, which sort hard-coded integers.
+Simple application run print "34", while when run with a *_MAGIC_JAVA_PARAMETER_* it prints "33".
+
+Main question is: What is the MAGIC_JAVA_PARAMETER?
+
+== How to build application?
+
+----
+javac pl/jug/bydgoszcz/competition/MagicJavaParameter.java
+----
+
+== How to run application?
+
+.Simple call should return 34
+----
+java pl.jug.bydgoszcz.competition.MagicJavaParameter
+----
+
+.Call with a magic parameter should return 33
+----
+export MAGIC_JAVA_PARAMETER="...."
+java ${MAGIC_JAVA_PARAMETER} pl.jug.bydgoszcz.competition.MagicJavaParameter
+----
+
+== How to test application on different JDKs?
+
+----
+export MAGIC_JAVA_PARAMETER="...."
+
+for jdkVersion in 8 9 10 11 12; do
+    find . -name "*.class" -exec rm -f {} \;
+    docker run --rm -v ${PWD}/src/main/java:/usr/src/myapp -w /usr/src/myapp openjdk:${jdkVersion} bash -c "
+        java -version;
+        javac pl/jug/bydgoszcz/competition/MagicJavaParameter.java;
+        java pl.jug.bydgoszcz.competition.MagicJavaParameter;
+        java ${MAGIC_JAVA_PARAMETER} pl.jug.bydgoszcz.competition.MagicJavaParameter;
+        "
+done
+
+openjdk version "1.8.0_222"
+OpenJDK Runtime Environment (build 1.8.0_222-b10)
+OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)
+34
+33
+openjdk version "9.0.4"
+OpenJDK Runtime Environment (build 9.0.4+12-Debian-4)
+OpenJDK 64-Bit Server VM (build 9.0.4+12-Debian-4, mixed mode)
+34
+33
+openjdk version "10.0.2" 2018-07-17
+OpenJDK Runtime Environment (build 10.0.2+13-Debian-2)
+OpenJDK 64-Bit Server VM (build 10.0.2+13-Debian-2, mixed mode)
+34
+33
+openjdk version "11.0.4" 2019-07-16
+OpenJDK Runtime Environment 18.9 (build 11.0.4+11)
+OpenJDK 64-Bit Server VM 18.9 (build 11.0.4+11, mixed mode)
+34
+33
+openjdk version "12.0.2" 2019-07-16
+OpenJDK Runtime Environment (build 12.0.2+10)
+OpenJDK 64-Bit Server VM (build 12.0.2+10, mixed mode, sharing)
+34
+33
+----
